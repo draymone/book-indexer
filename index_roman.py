@@ -11,7 +11,7 @@ def index_roman(file):
     Paramètre d'entrée : un fichier texte
     Sortie : un ABR"""
     # récupération du texte dans le fichier
-    texte = open(file,'r',encoding = 'utf-8')
+    texte = open(file, 'r', encoding='utf-8')
     tableau = texte.readlines()
     texte.close()
         
@@ -36,11 +36,6 @@ def index_roman(file):
             if not arbre.recherche(mot):
                 arbre.inserer(mot)
     print(arbre)
-    print("Presence de sandwich:", arbre.recherche("sandwich"))
-    print("Presence de éléphant:", arbre.recherche("éléphant"))
-    print("Taille:", arbre.taille())
-    print("Hauteur:", arbre.hauteur())
-    print("Parcours infixe:", arbre.parcours(abr.TypeParcours.INFIXE))
 
 
 index_roman("le_tour_du_monde_en_80_jours.txt")
