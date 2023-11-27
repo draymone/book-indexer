@@ -36,6 +36,11 @@ def index_roman(file):
             if not arbre.recherche(mot):
                 arbre.inserer(mot)
     print(arbre)
+    print("Presence de sandwich:", arbre.recherche("sandwich"))
+    print("Presence de éléphant:", arbre.recherche("éléphant"))
+    print("Taille:", arbre.taille())
+    print("Hauteur:", arbre.hauteur())
+    print("Parcours infixe:", arbre.parcours(abr.TypeParcours.INFIXE))
 
 
-index_roman("therefore_i_am.txt")
+index_roman("le_tour_du_monde_en_80_jours.txt")
