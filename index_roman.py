@@ -14,7 +14,7 @@ def index_roman(file):
     texte = open(file, 'r', encoding='utf-8')
     tableau = texte.readlines()
     texte.close()
-        
+
     # initialisation de l'arbre binaire de recherche
     arbre = None
 
@@ -28,14 +28,19 @@ def index_roman(file):
         # on enlève les mots vides dans la liste de mots
         while '' in liste_mots:
             liste_mots.remove('')
-        
+
         # pour chaque mot dans la liste de mots
-        for mot in liste_mots:
-            if arbre is None:
-                arbre = abr.Noeud(mot)
-            if not arbre.recherche(mot):
-                arbre.inserer(mot)
-    print(arbre)
+        for mot in liste_mots:  # Pour chaque mot de la ligne
+            if arbre is None:  # Si l'arbre est vide
+                arbre = abr.Noeud(mot)  # On l'initialise avec comme seul noeud mot
+                pass  # On passe cette ittération de la boucle
+            arbre.inserer(mot)  # On insere le mot dans l'arbre/on augmente son occurrence
+    return arbre
 
 
-index_roman("le_tour_du_monde_en_80_jours.txt")
+therefore_i_am = index_roman("therefore_i_am.txt")
+print(therefore_i_am.get_valeurs())
+print(therefore_i_am.donner_occurence("i"))
+print(therefore_i_am.total_occurrence())
+print(therefore_i_am.max_occurrence())
+print(therefore_i_am.max_occurrence_v2())

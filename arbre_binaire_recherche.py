@@ -10,17 +10,25 @@ class TypeParcours(Enum):
 
 
 class Noeud:
-    def __init__(self, valeur):
+    def __init__(self, valeur, count=1):
         """Méthode constructeur pour la classe Noeud.
         Paramètre d'entrée : valeur
-        valeur : int ou str"""
-        self.valeur = valeur
+        valeur : int ou str
+        count: (int) occurrence du mot"""
+        self.valeur = (valeur, count)
         self.gauche = None
         self.droit = None
 
     def get_valeur(self):
         """Méthode accesseur pour obtenir la valeur du noeud
         Aucun paramètre en entrée"""
+        return self.valeur[0]
+
+    def get_valeurs(self):
+        """Méthode accesseur pour obtenir la valeur du noeud et son occurrence
+
+        :return: (tuple) (valeur, occurrence)
+        """
         return self.valeur
 
     def droit_existe(self):
@@ -36,8 +44,8 @@ class Noeud:
     def inserer(self, cle):
         """Méthode d'insertion de clé dans un arbre binaire de recherche
         Paramètre d'entrée : valeur
-        valeur : int ou str"""
-        if cle < self.valeur:
+        cle : int ou str"""
+        if cle < self.get_valeur():
             # on insère à gauche
             if self.gauche_existe():
                 # on descend à gauche et on recommence le test initial
@@ -45,7 +53,7 @@ class Noeud:
             else:
                 # on crée un fils gauche
                 self.gauche = Noeud(cle)
-        elif cle > self.valeur:
+        elif cle > self.get_valeur():
             # on insère à droite
             if self.droit_existe():
                 # on descend à droite et on recommence le test initial
@@ -53,6 +61,8 @@ class Noeud:
             else:
                 # on crée un fils droit
                 self.droit = Noeud(cle)
+        elif cle == self.get_valeur():  # Si on a trouvé la clé
+            self.incr_occurrence()  # On incrémente sa valeur
 
     def taille(self):
         """Methode récursive de calcul de la taille de l'ABR
@@ -128,18 +138,18 @@ class Noeud:
 
         # Le noeud a deux enfants
         if self.gauche_existe() & self.droit_existe():
-            return [self.valeur] + self.gauche.__parcours_prefixe__() + self.droit.__parcours_prefixe__()
+            return [self.get_valeur()] + self.gauche.__parcours_prefixe__() + self.droit.__parcours_prefixe__()
 
         # Le noeud a un enfant droit
         if self.droit_existe():
-            return [self.valeur] + self.droit.__parcours_prefixe__()
+            return [self.get_valeur()] + self.droit.__parcours_prefixe__()
 
         # Le noeud a un enfant gauche
         if self.gauche_existe():
-            return [self.valeur] + self.gauche.__parcours_prefixe__()
+            return [self.get_valeur()] + self.gauche.__parcours_prefixe__()
 
         # Le noeud n'a pas d'enfants
-        return [self.valeur]
+        return [self.get_valeur()]
 
     def __parcours_infixe__(self):
         # Le noeud est nul
@@ -148,18 +158,18 @@ class Noeud:
 
         # Le noeud a deux enfants
         if self.gauche_existe() & self.droit_existe():
-            return self.gauche.__parcours_infixe__() + [self.valeur] + self.droit.__parcours_infixe__()
+            return self.gauche.__parcours_infixe__() + [self.get_valeur()] + self.droit.__parcours_infixe__()
 
         # Le noeud a un enfant droit
         if self.droit_existe():
-            return [self.valeur] + self.droit.__parcours_infixe__()
+            return [self.get_valeur()] + self.droit.__parcours_infixe__()
 
         # Le noeud a un enfant gauche
         if self.gauche_existe():
-            return self.gauche.__parcours_infixe__() + [self.valeur]
+            return self.gauche.__parcours_infixe__() + [self.get_valeur()]
 
         # Le noeud n'a pas d'enfants
-        return [self.valeur]
+        return [self.get_valeur()]
 
     def __parcours_suffixe__(self):
         # Le noeud est nul
@@ -168,18 +178,18 @@ class Noeud:
 
         # Le noeud a deux enfants
         if self.gauche_existe() & self.droit_existe():
-            return self.gauche.__parcours_suffixe__() + self.droit.__parcours_suffixe__() + [self.valeur]
+            return self.gauche.__parcours_suffixe__() + self.droit.__parcours_suffixe__() + [self.get_valeur()]
 
         # Le noeud a un enfant droit
         if self.droit_existe():
-            return self.droit.__parcours_suffixe__() + [self.valeur]
+            return self.droit.__parcours_suffixe__() + [self.get_valeur()]
 
         # Le noeud a un enfant gauche
         if self.gauche_existe():
-            return self.gauche.__parcours_suffixe__() + [self.valeur]
+            return self.gauche.__parcours_suffixe__() + [self.get_valeur()]
 
         # Le noeud n'a pas d'enfants
-        return [self.valeur]
+        return [self.get_valeur()]
 
     def __parcours_largeur__(self):
         # Variables
@@ -194,7 +204,7 @@ class Noeud:
         while not ma_file.file_vide():
             # On retire le premier noeud pour le placer dans le resultat
             node = ma_file.retirer()
-            liste_noeuds.append(node.valeur)
+            liste_noeuds.append(node.get_valeur())
             # Si le noeud gauche existe on l'ajoute à la file
             if node.gauche_existe():
                 ma_file.ajouter(node.gauche)
@@ -226,14 +236,38 @@ class Noeud:
             return False
         return self.droit.recherche(x)  # La clé ne peut que se trouver dans l'arbre droit
 
+    def donner_occurence(self, cle):
+        """Méthode récursive de recherche de l'ocurrence d'une clé
+
+        :param cle: (str ou int) clé à chercher
+        :return: (int) occurrence de la clé
+        """
+        # TODO completer les fonctions à faire (voir exo 4)
+        if self is None:
+            return False
+
+        valeur = self.get_valeur()  # On récupère la valeur du noeud
+        if valeur == cle:  # Si on a la même valeur, on est sur la bonne clé
+            return self.get_valeurs()[1]  # On récupère l'ocurrence et on a renvoie
+
+        if valeur > cle:  # Si la clé est inférieure à la valeur...
+            if not self.gauche_existe():  # (Et que l'arbre gauche existe)
+                return False
+            return self.gauche.donner_occurence(cle)  # Elle ne peut que se trouver dans l'arbre gauche
+
+        # Sinon la clé est supérieure à la valeur
+        if not self.droit_existe():  # Et si l'arbre gauche existe
+            return False
+        return self.droit.donner_occurence(cle)  # La clé ne peut que se trouver dans l'arbre droit
+
     def niveaux_arbre(self, index=0, levels_matrix=None):
         if levels_matrix is None:
             levels_matrix = []
 
         if len(levels_matrix) >= index + 1:  # Si le niveau est déja dans la matrice...
-            levels_matrix[index].append(self.valeur)  # On y ajoute l'element
+            levels_matrix[index].append(self.get_valeur())  # On y ajoute l'element
         else:  # Si le niveau n'est pas encore dans la matrice...
-            levels_matrix.append([self.valeur])  # On le crée
+            levels_matrix.append([self.get_valeur()])  # On le crée
 
         # On ajoute la partie gauche de l'arbre
         if self.gauche_existe():
@@ -246,6 +280,62 @@ class Noeud:
         # On renvoie la matrice
         return levels_matrix
 
+    def incr_occurrence(self):
+        self.valeur = (self.get_valeur(), self.get_valeurs()[1]+1)
+
+    def total_occurrence(self):
+        """Méthode récursive de recherche du total des occurrences dans un ABR
+
+        :return: (int) total des occurrences
+        """
+        occurence = self.get_valeurs()[1]
+
+        occurence_gauche = 0
+        if self.gauche_existe():
+            occurence_gauche = self.gauche.total_occurrence()
+
+        occurence_droite = 0
+        if self.droit_existe():
+            occurence_droite = self.droit.total_occurrence()
+
+        return occurence + occurence_gauche + occurence_droite
+
+    def max_occurrence(self):
+        """Méthode récursive de recherche de l'élement avec la plus grande occurrence dans un ABR
+
+        :return: (int) plus grande occurrence
+        """
+        occurence = self.get_valeurs()[1]
+
+        occurence_gauche = 0
+        if self.gauche_existe():
+            occurence_gauche = self.gauche.max_occurrence()
+
+        occurence_droite = 0
+        if self.droit_existe():
+            occurence_droite = self.droit.max_occurrence()
+
+        values = [occurence, occurence_gauche, occurence_droite]
+        return max(values)
+
+    def max_occurrence_v2(self):
+        """Méthode récursive de recherche de l'élement avec la plus grande occurrence dans un ABR
+
+        :return: (int) plus grande occurrence
+        """
+        occurence = self.get_valeurs()
+
+        occurence_gauche = (0, 0)
+        if self.gauche_existe():
+            occurence_gauche = self.gauche.max_occurrence_v2()
+
+        occurence_droite = (0, 0)
+        if self.droit_existe():
+            occurence_droite = self.droit.max_occurrence_v2()
+
+        values = [occurence, occurence_gauche, occurence_droite]
+        return max(values, key=lambda x:x[1])
+
     def __str__(self):
         """Méthode récursive pour obtenir une représentation lisible
         d'un arbre.
@@ -254,7 +344,7 @@ class Noeud:
             >>> print(arbre)"""
         # Keep a list of lines
         lines = list()
-        lines.append(str(self.valeur))
+        lines.append(str(self.get_valeur()) + ", " + str(self.get_valeurs()[1]))
         # Get left and right sub-trees
         l = str(self.gauche).split('\n')
         r = str(self.droit).split('\n')
