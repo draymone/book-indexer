@@ -244,7 +244,7 @@ class Noeud:
             return False
         return self.droit.recherche(x)  # La clé ne peut que se trouver dans l'arbre droit
 
-    def donner_occurence(self, cle):
+    def donner_occurrence(self, cle):
         """Méthode récursive de recherche de l'ocurrence d'une clé
 
         :param cle: (str) clé à chercher
@@ -260,12 +260,12 @@ class Noeud:
         if valeur > cle:  # Si la clé est inférieure à la valeur...
             if not self.gauche_existe():  # (Et que l'arbre gauche existe)
                 return False
-            return self.gauche.donner_occurence(cle)  # Elle ne peut que se trouver dans l'arbre gauche
+            return self.gauche.donner_occurrence(cle)  # Elle ne peut que se trouver dans l'arbre gauche
 
         # Sinon la clé est supérieure à la valeur
         if not self.droit_existe():  # Et si l'arbre gauche existe
             return False
-        return self.droit.donner_occurence(cle)  # La clé ne peut que se trouver dans l'arbre droit
+        return self.droit.donner_occurrence(cle)  # La clé ne peut que se trouver dans l'arbre droit
 
     def niveaux_arbre(self, index=0, levels_matrix=None):
         ###############################################
@@ -362,6 +362,16 @@ class Noeud:
 
         values = [valeurs, valeurs_gauche, valeurs_droite]  # On crée une liste avec les valeurs de chaque partie
         return max(values, key=lambda x: x[1])  # On renvoie celle avec la plus haute occurrence
+
+    def donner_frequence(self, key):
+        """Renvoie la fréquence de key (apparitions pour 10 000)
+
+        :param key: (string) mot dont il faut renvoyer la fréquence
+        :return: (float) fréquence d'apparition de key
+        """
+        apparittions = self.donner_occurrence(key)
+        nb_mots = self.total_occurrence()
+        return apparittions*10000/nb_mots
 
     def __str__(self):
         """Méthode récursive pour obtenir une représentation lisible d'un arbre.
