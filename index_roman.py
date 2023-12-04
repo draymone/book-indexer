@@ -1,4 +1,4 @@
-﻿# importation de la classe Noeud d'un ABR
+﻿# importation de la classe Noeud
 import arbre_binaire_recherche as abr
 
 # importation de la bibliothèque Expressions Régulières
@@ -14,28 +14,20 @@ def index_roman(file):
     texte = open(file, 'r', encoding='utf-8')
     tableau = texte.readlines()
     texte.close()
-        
+
     # initialisation de l'arbre binaire de recherche
     arbre = None
 
-    # Boucle : pour chaque ligne du texte
-    for ligne in tableau:
-        # formatage du fichier texte
-        # passage en minuscule
-        ligne = ligne.lower()
-        # on récupère une liste de mots, en enlevant tous les séparateurs connus
-        liste_mots = re.split('[;_,.?!\"\'\-\%\n() `&]', ligne)
-        # on enlève les mots vides dans la liste de mots
-        while '' in liste_mots:
-            liste_mots.remove('')
-        
-        # pour chaque mot dans la liste de mots
-        for mot in liste_mots:
-            if arbre is None:
-                arbre = abr.Noeud(mot)
-            if not arbre.recherche(mot):
-                arbre.inserer(mot)
-    print(arbre)
+    for ligne in tableau:  # Pour chaque ligne du texte
+        ligne = ligne.lower()  # Formatage du fichier en minuscules
+        liste_mots = re.split('[;_,.?!\"\'\-\%\n() `&]', ligne)  # On sépare les mots en enlevant les caractères
+        # spéciaux
+        while '' in liste_mots:  # Si il y a des caratères vides
+            liste_mots.remove('')  # On les enleves
 
-
-index_roman("le_tour_du_monde_en_80_jours.txt")
+        for mot in liste_mots:  # Pour chaque mot de la ligne
+            if arbre is None:  # Si l'arbre est vide
+                arbre = abr.Noeud(mot)  # On l'initialise avec comme seul noeud mot
+                continue  # On passe cette ittération de la boucle
+            arbre.inserer(mot)  # Sinon on insere le mot dans l'arbre
+    return arbre
