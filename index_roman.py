@@ -39,7 +39,6 @@ def index_roman(file):
 def dessin_graphe():
     """Dessine un graphique avec matplotlib pour présenter des statistiques sur l'arbre
 
-    :param arbre: (Noeud)
     :return:
     """
     # Création d'un dico qui contient les auteurs et le livre associé
@@ -78,4 +77,48 @@ def dessin_graphe():
     plt.show()  # On affiche la fenetre
 
 
-dessin_graphe()
+def dessin_grapheV2():
+    """Dessine un graphique avec matplotlib pour présenter des statistiques sur l'arbre
+    Fonctionne avec les anciennes versions de matplotlib
+
+    :return:
+    """
+    # Création d'un dico qui contient les auteurs et le livre associé
+    dicto_auteurs_livre = {"Victor Hugo": "quatreving-treize.txt",
+                           "Jules Verne": "le_tour_du_monde_en_80_jours.txt",
+                           "Marcel Proust": "du_cote_de_chez_swann.txt",
+                           "Colette": "le_ble_en_herbe.txt",
+                           "George Sand": "la_mare_au_diable.txt"}
+
+    words = ("homme", "femme", "beau", "même", "très", "aussi", "donc", "car", "dieu", "amour")  # Liste des mots
+    compte_mots = {}  # Dico vide pour stocker les auteurs et leur utilisation des mots
+    for author in dicto_auteurs_livre:  # Pour chaque auteur
+        abr = index_roman(dicto_auteurs_livre[author])  # On récupère son livre
+        words_count = []
+        for word in words:  # Pour chacun des mots à chercher
+            words_count.append(abr.donner_frequence(word))  # On recupere sa valeur
+        compte_mots[author] = words_count  # On ajoute l'ensemble des valeurs au compte des mots
+
+    x = np.arange(len(words))
+    width = 0.15 # Epaisseur des barres
+
+    # plot data in grouped manner of bar type
+
+    decalage = -1 * (len(dicto_auteurs_livre) // 2)  # Decalage de base
+    colors = ["cyan", "orange", "green", "red", "blue"]  # Liste des couleurs
+    color_index = 0  # Index de base
+    for author in dicto_auteurs_livre:  # Pour chaque auteur
+        plt.bar(x + decalage * width, compte_mots[author], width, color=colors[color_index])  # Afficher les barre
+        decalage += 1  # On icnrémente le decalage
+        color_index += 1  # On passe a la prochaine couleur
+
+    plt.xticks(x, words)
+    plt.xlabel("Mots")  # Titre de l'axe des x
+    plt.ylabel("Frequence d'apparitions pour 10 000 mots")  # Titre de l'axe des y
+    plt.title("Occurrence de mots clés chez plusieurs auteurs")  # Titre
+    plt.legend(["Victor Hugo", "Jules Verne", "Marcel Proust", "Colette", "George Sand"])  # Légende
+
+    plt.show()  # Affichage du graphique
+
+
+dessin_grapheV2()
